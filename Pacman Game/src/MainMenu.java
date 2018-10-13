@@ -166,7 +166,16 @@ public class MainMenu extends JLabel implements ActionListener,LineListener
         {
       		      public void actionPerformed(ActionEvent arg0) 
       		      {
-      		    	  NameEntry.control(1);
+      		    	 {
+      					 SwingUtilities.invokeLater(new Runnable()
+      						{
+      							public void run()
+      							{
+      								NameEntry.control(1);
+      							}
+      						});		
+      				 }
+      		    	  
       		    	  
       		    	  try
       		    	  {

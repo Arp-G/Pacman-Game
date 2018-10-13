@@ -40,13 +40,13 @@ public class PacMan_Level1 extends JPanel implements ActionListener,KeyListener
 	
 	static JFrame frame;
 	
-	static PlayerData p;
+	static PlayerData p1;
 	
 	
 	static void control(PlayerData p)
 	{
-		score=p.score;
-		
+		p1=p;
+		score=p1.score;
 		display();
 	}
 	
@@ -132,13 +132,19 @@ public class PacMan_Level1 extends JPanel implements ActionListener,KeyListener
 		
 		frame.setTitle("PAC MAN");
 	}
-	
-	
-		
+			
 	public static void main(String args[])
 	{
-		p=new PlayerData("Test",java.time.LocalDateTime.now().toString());
-		display();			
+		
+		p1=new PlayerData("Test",java.time.LocalDateTime.now().toString());
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				display();	
+			}
+		});	
+				
 	}
 	
 	public void paintComponent(Graphics g)
@@ -363,7 +369,6 @@ public class PacMan_Level1 extends JPanel implements ActionListener,KeyListener
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	void chkWin()
 	{
 		for(int i=0;i<1000;i++)
@@ -374,80 +379,60 @@ public class PacMan_Level1 extends JPanel implements ActionListener,KeyListener
 					return;
 			}
 		}
-		
-		try {
-		      File file = new File("sounds/pacman_win.wav");
-		      AudioInputStream stream = AudioSystem.getAudioInputStream(file);
-		      Clip clip = AudioSystem.getClip();
-		      clip.open(stream);
-		      clip.start();
+			     		  		    
+		frame.dispose();		      
+		p1.setScore(score);
 		      
-		      Thread.sleep(1000);
-		 
-		      stream.close();
+		new Thread(new Runnable()
+	    {		            	   
+				public void run()
+				{	
+					try {
+							File file = new File("sounds/pacman_win.wav");
+						      AudioInputStream stream = AudioSystem.getAudioInputStream(file);
+						      Clip clip = AudioSystem.getClip();
+						      clip.open(stream);
+						      clip.start();
+						      stream.close();
+						      new LevelSwitch(2,p1).display();
+						}
+						catch(Exception e)
+						{
+							e.getStackTrace();	
+						}
+						}
+			  }).start();
 		      
-		      p.setScore(score);
-		      		      
-		      JDialog d = new JDialog(frame, "Continue ?", true); 
-		     
-		      d.setLayout( new FlowLayout() );
-		      
-		      JButton b = new JButton ("OK");  
-		        
-		        b.addActionListener ( new ActionListener()  
-		        {  
-		            public void actionPerformed( ActionEvent e )  
-		            {  
-		                d.setVisible(false); 
-		                frame.dispose();
-		                
-		                Thread t=new Thread() 
-			    		{
-			    			public void run()
-			    			{
-			    				StartingCountDown.control(p,2);
-			    			}
-			    		};
-			    		
-			    		t.start();
-		                
-		  		      	Thread.currentThread().stop();
-		            }  
-		        });
-		        
-		        d.add( new JLabel ("Continue to Next Level ?")); 
-		        d.setLocation(400,400);
-		        d.add(b);
-		        d.setSize(200,100);
-		        d.setVisible(true);  
-	 
-		    } catch (Exception ex) {
-		      System.out.println(ex.getMessage());
-		    }
+   	      
+		      Thread.currentThread().stop();
+		}
 		
-		System.exit(1);
-		
-	}
 	
-	@SuppressWarnings("deprecation")
+	
 	void chkLose()
 	{
 		if(LoseFlag)
 		{
 			try
 	        {
-	        	Thread.sleep(1500);
+	        	Thread.sleep(1500); //show lose message
 	        }
 	        catch(Exception e)
 	        {
 	        	e.getStackTrace();
 	        }
-	        
-			
+
 			frame.dispose();
-			MainMenu.display();
 			
-			Thread.currentThread().stop(); // Stop the current thread;
+			new Thread(new Runnable()
+            {		            	   
+					public void run()
+					{	
+						MainMenu.display();
+					}
+			}).start();
+			
+			Thread.currentThread().stop();
 		}
 		
 		for(int i=0;i<enemyList.size();i++)
@@ -790,7 +775,7 @@ public class PacMan_Level1 extends JPanel implements ActionListener,KeyListener
 				
 			maze[80][120]=3;	
 			
-			maze[80][200]=5;
+			/*maze[80][200]=5;
 				
 			maze[80][280]=3;			
 			
@@ -818,7 +803,7 @@ public class PacMan_Level1 extends JPanel implements ActionListener,KeyListener
 			
 			maze[480][360]=3;
 			
-			maze[520][360]=7;
+			maze[520][360]=7;*/
 			
 			//Food End
 								

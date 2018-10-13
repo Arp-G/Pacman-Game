@@ -1,8 +1,5 @@
-import java.awt.FlowLayout;
 import java.io.*;
-
 import javax.swing.*;
-
 import javax.sound.sampled.*;
 
 
@@ -42,15 +39,27 @@ public class StartingCountDown
 			frame.dispose();
 			
 			 if(x==1)
-				 PacMan_Level1.control(p);
+			 {
+				 SwingUtilities.invokeLater(new Runnable()
+					{
+						public void run()
+						{
+							PacMan_Level1.control(p);
+						}
+					});	
+			 }
 			 
 			 else if(x==2)
-				 PacMan_Level2.control(p);
+			 {
+				 SwingUtilities.invokeLater(new Runnable()
+					{
+						public void run()
+						{
+							PacMan_Level2.control(p);
+						}
+					});		
+			 }
 			 
-			 //else if(x==3)
-				 //PacMan_Level3.control(p);
-			 
-			 //Thread.currentThread().stop();
 
 		}
 		catch(InterruptedException e)

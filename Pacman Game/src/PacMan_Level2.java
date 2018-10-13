@@ -79,7 +79,7 @@ public class PacMan_Level2 extends JPanel implements ActionListener,KeyListener
 	
 	boolean LoseFlag=false;
 	
-	static PlayerData p;
+	static PlayerData p1;
 	
 	int ScatterCount=0;
 	
@@ -135,12 +135,13 @@ public class PacMan_Level2 extends JPanel implements ActionListener,KeyListener
 	
 	public static void main(String args[])
 	{
-		p=new PlayerData("Test",java.time.LocalDateTime.now().toString());
+		p1=new PlayerData("Test",java.time.LocalDateTime.now().toString());
 		display();		
 	}
 	
 	public static void control(PlayerData p)
 	{
+		p1=p;
 		score=p.score;
 		display();
 	}
@@ -412,52 +413,33 @@ public class PacMan_Level2 extends JPanel implements ActionListener,KeyListener
 					return;
 			}
 		}
-		
-		try {
-		      File file = new File("sounds/pacman_win.wav");
-		      AudioInputStream stream = AudioSystem.getAudioInputStream(file);
-		      Clip clip = AudioSystem.getClip();
-		      clip.open(stream);
-		      clip.start();
+			     		  		    
+		frame.dispose();		      
+		p1.setScore(score);
 		      
-		      Thread.sleep(1000);
-		 
-		      stream.close();
+		new Thread(new Runnable()
+	    {		            	   
+				public void run()
+				{	
+					try {
+							File file = new File("sounds/pacman_win.wav");
+						      AudioInputStream stream = AudioSystem.getAudioInputStream(file);
+						      Clip clip = AudioSystem.getClip();
+						      clip.open(stream);
+						      clip.start();
+						      stream.close();
+						      new LevelSwitch(3,p1).display();
+						}
+						catch(Exception e)
+						{
+							e.getStackTrace();	
+						}
+						}
+			  }).start();
 		      
-		      p.setScore(score);
-		      //PacMan_Level2.control(p);
-		      
-		      
-		     JDialog d = new JDialog(frame, "Continue ?", true); 
-		     
-		        d.setLayout( new FlowLayout() ); 
-		        
-		        JButton b = new JButton ("OK");  
-		        
-		        b.addActionListener ( new ActionListener()  
-		        {  
-		            public void actionPerformed( ActionEvent e )  
-		            {  
-		                d.setVisible(false);  
-		                
-		                StartingCountDown.control(p,3); 
-		  		      	frame.dispose();
-		            }  
-		        });
-		        
-		        d.add( new JLabel ("Continue to Next Level ?")); 
-		        d.setLocation(400,400);
-		        d.add(b);
-		        d.setSize(200,100);
-		        d.setVisible(true);  
-
-		    } catch (Exception ex) {
-		      System.out.println(ex.getMessage());
-		    }
-		
-		System.exit(1);
-		
-	}
+   	      
+		      Thread.currentThread().stop();
+		}
 	
 	void chkLose()
 	{
@@ -473,9 +455,16 @@ public class PacMan_Level2 extends JPanel implements ActionListener,KeyListener
 	        }
 			
 			frame.dispose();
-			MainMenu.display();
 			
-			Thread.currentThread().stop(); // Stop the current thread;
+			new Thread(new Runnable()
+            {		            	   
+					public void run()
+					{	
+						MainMenu.display();
+					}
+			}).start();
+			
+			Thread.currentThread().stop();
 		}
 		
 		for(int i=0;i<enemyList.size();i++)

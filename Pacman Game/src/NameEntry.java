@@ -8,7 +8,6 @@ import javax.swing.border.EmptyBorder;
 
 public class NameEntry
 {
-	static PlayerData p;
 	
 	static JFrame frame=null;
 	
@@ -45,28 +44,6 @@ public class NameEntry
 		textField.requestFocusInWindow();
 		
 		textField.selectAll();
-		
-		frame.addWindowListener(new WindowAdapter()
-		{
-		      public void windowClosed(WindowEvent e) 
-		      {		    	   
-		    		Thread t=new Thread() 
-		    		{
-		    			public void run()
-		    			{
-
-		    				StartingCountDown.control(p,x);
-		    			}
-		    		};
-		    		
-		    		t.start();
-		    		
-		    		Thread.currentThread().stop();
-		    			    	  
-		      }
-   
-		});
-
 		//Mouse click event
 
 		button_Ok.addActionListener(new ActionListener() 
@@ -74,16 +51,24 @@ public class NameEntry
 				      public void actionPerformed(ActionEvent arg0) 
 				      {
 				        String text=textField.getText();
-				        
+		        
 				        if(text!=null)
-				        {
-				        	p=new PlayerData(text,java.time.LocalDateTime.now().toString());				       
+				        {	   
+				        	
 				        	frame.dispose();
+				        	
+				        	new Thread(new Runnable()
+							{
+								public void run()
+								{
+									StartingCountDown.control(new PlayerData(text,java.time.LocalDateTime.now().toString()),x);
+								}
+							}).start();
+				        	
 				        }
 				      }
-				      
 		});
-
+				     
 
 		button_Ok.setFont(button_Ok.getFont().deriveFont(Font.BOLD, 20)); //Set button size by changing fonts
 
