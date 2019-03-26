@@ -445,6 +445,10 @@ public class PacMan_Level2 extends JPanel implements ActionListener,KeyListener
 	{
 		if(LoseFlag)
 		{
+			p1.setScore(score);
+			
+			Leaderboards.addData(p1);
+			
 			try
 	        {
 	        	Thread.sleep(1500);
@@ -801,7 +805,7 @@ public class PacMan_Level2 extends JPanel implements ActionListener,KeyListener
 			
 			maze[80][200]=3;
 				
-			maze[80][280]=4;			
+			/*maze[80][280]=4;			
 			
 			maze[80][480]=3;
 			
@@ -839,7 +843,7 @@ public class PacMan_Level2 extends JPanel implements ActionListener,KeyListener
 			
 			maze[760][520]=6;
 			
-			maze[800][520]=8;
+			maze[800][520]=8;*/
 			
 			//Food End
 								

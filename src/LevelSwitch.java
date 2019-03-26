@@ -36,6 +36,11 @@ public class LevelSwitch extends JFrame
 	        					StartingCountDown.display(p,2);	
 	        				else if(nextLevel==3)
 	        					StartingCountDown.display(p,3);	
+	        				
+	        				else 
+	        					MainMenu.display();
+	        			
+	        					
 	        			}
 	        	  }).start();	
 	           }  
@@ -43,9 +48,17 @@ public class LevelSwitch extends JFrame
 	    
 	    winFrame.setResizable(false);		
         winFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    winFrame.add( new JLabel ("Continue to Next Level ?")); 		     
-	    winFrame.setSize(200,100);
+        if(nextLevel==4) {
+        	winFrame.setSize(400, 100);
+        	winFrame.add( new JLabel ("Congratulations")); 
+        	winFrame.add( new JLabel ("You have won the game. Go back to main Menu ?"));
+        }
+        else {
+	    	winFrame.add( new JLabel ("Continue to Next Level ?")); 		     
+	    	winFrame.setSize(200,100);
+        }
 	    winFrame.add(b);
+	    winFrame.setTitle("Promt");
 	    winFrame.setVisible(true);
 	
 	}

@@ -23,19 +23,36 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 	
 	int prevX=0,prevY=0; //Previous x,y
 	
-	int xAngle=30,yAngle=300; // PacMan_Level3 mouth angle for fillArc() method
+	int xAngle=30,yAngle=300; // PacMan mouth angle for fillArc() method
 	
-	boolean flag=true; // PacMan_Level3 Mouth open/close animation
+	boolean flag=true; // PacMan Mouth open/close animation
 	
-	int count=0; // PacMan_Level3 Mouth open for how long
+	int count=0; // PacMan Mouth open for how long
 		
 	int maze[][]=new int[1500][1500];
 	
-	int score=0;
+	static int score=0;
 	
 	static int food=1;
 	
 	boolean LoseFlag=false;
+	
+	static JFrame frame;
+	
+	static PlayerData p1;
+	
+	static int scaredGhost=0;
+	
+	static int ExtendedScared=0;
+	
+	static void control(PlayerData p)
+	{
+		p1=p;
+		
+		score=p.score;
+		
+		display();
+	}
 	
 	class Enemy
 	{
@@ -67,7 +84,7 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 	PacMan_Level3()
 	{
 		try {
-		      File file = new File("sounds/PacMan_beginning.wav");
+		      File file = new File("sounds/pacman_beginning.wav");
 		      AudioInputStream stream = AudioSystem.getAudioInputStream(file);
 		      Clip clip = AudioSystem.getClip();
 		      clip.open(stream);
@@ -89,8 +106,7 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 		
 		setFocusTraversalKeysEnabled(false);
 		
-		//add Enemy's
-		
+		//add Enemy's		
 		
 		enemyList.add(new Enemy(880,40,"Red","Red_ghost","_left",5));
 		
@@ -99,13 +115,14 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 		enemyList.add(new Enemy(40,640,"Choclate","Choclate_ghost","_left",10));
 		
 		enemyList.add(new Enemy(480,360,"Pink","Pink_ghost","_left",8));
-	}
 		
-	public static void main(String args[])
+	}
+	
+	public static void display()
 	{
 		PacMan_Level3 ob=new PacMan_Level3();
 		
-		JFrame frame=new JFrame();
+		frame=new JFrame();
 		
 		frame.setResizable(false);
 		
@@ -118,7 +135,12 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		frame.setTitle("PAC MAN");
+	}
 			
+	public static void main(String args[])
+	{
+		p1=new PlayerData("Test",java.time.LocalDateTime.now().toString());
+		display();			
 	}
 	
 	public void paintComponent(Graphics g)
@@ -126,17 +148,34 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 		
 		super.paintComponent(g);
 		
+		if(ExtendedScared!=0)
+			ExtendedScared--;
+		
 		
 		if(!LoseFlag)
 		{
 			makeMaze(g);
 			
-			for(int i=0;i<enemyList.size();i++)
+			if(ExtendedScared==0)
 			{
-				Enemy tmp=enemyList.get(i);
+				for(int i=0;i<enemyList.size();i++)
+				{
+					Enemy tmp=enemyList.get(i);
 	
-				g.drawImage(new ImageIcon("Images/"+tmp.path+tmp.Direction+".png").getImage(), tmp.x, tmp.y, null); //Draw enemys
+					g.drawImage(new ImageIcon("Images/"+tmp.path+tmp.Direction+".png").getImage(), tmp.x, tmp.y, null); //Draw enemys
 						 	 
+				}
+			}
+			else
+			{
+				for(int i=0;i<enemyList.size();i++)
+				{
+					Enemy tmp=enemyList.get(i);
+	
+					g.drawImage(new ImageIcon("Images/Frightned_ghost.png").getImage(), tmp.x, tmp.y, null); //Draw scared enemys
+						 	 
+				}
+				scaredGhost--;
 			}
 			
 			g.setColor(Color.decode("#FFFF00")); //Set pac man color
@@ -230,6 +269,8 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 				
 				else if(maze[i][j]==8)
 					g.drawImage(new ImageIcon("Images/food6.png").getImage(), i, j, null); //Draw food
+				else if(maze[i][j]==9)
+					g.drawImage(new ImageIcon("Images/food_power.png").getImage(), i, j, null); //Draw food
 				
 				
 		
@@ -245,12 +286,11 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 	}
 		
 	public void actionPerformed(ActionEvent e)
-	{
-		
+	{		
 		chkWin();
 		
 		chkLose();
-		
+				
 		chkFood();
 		
 		repaint();
@@ -259,9 +299,12 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 		{
 			Enemy tmp=enemyList.get(i); // Get the enemy
 			
-			tmp=followAI(tmp); // Update enemy's new location
+			if(ExtendedScared==0 || (scaredGhost>=8 && scaredGhost<=10))
+				tmp=followAI(tmp); // Update enemy's new location
+			else
+				tmp=escapeAI(tmp);
 			
-			enemyList.set(i, tmp); // Set the updated enemy to the nemy list
+			enemyList.set(i, tmp); // Set the updated enemy to the enemy list
 		}
 				
 		/* here frame size is 1000,800 and ball size is 40,40 so to balance (1000-40=960) and (800-40=760)  */
@@ -323,6 +366,28 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 	
 	void chkFood()
 	{
+		
+		if(maze[x][y]==9)
+		{
+			maze[x][y]=1;
+			scaredGhost=10;
+			ExtendedScared=13;
+			
+			try {
+			      File file = new File("sounds/scared_ghost.wav");
+			      AudioInputStream stream = AudioSystem.getAudioInputStream(file);
+			      Clip clip = AudioSystem.getClip();
+			      clip.open(stream);
+			      clip.start();
+			      stream.close();
+			 
+			    } catch (Exception ex) {
+			      System.out.println(ex.getMessage());
+			    }
+			
+		}
+		
+		
 		if(maze[x][y]==3 || maze[x][y]==4 || maze[x][y]==5 || maze[x][y]==6 || maze[x][y]==7 || maze[x][y]==8)
 		{
 			maze[x][y]=1;
@@ -330,7 +395,7 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 			score++;
 			
 			try {
-			      File file = new File("sounds/PacMan_chomp.wav");
+			      File file = new File("sounds/pacman_chomp.wav");
 			      AudioInputStream stream = AudioSystem.getAudioInputStream(file);
 			      Clip clip = AudioSystem.getClip();
 			      clip.open(stream);
@@ -344,6 +409,7 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	void chkWin()
 	{
 		for(int i=0;i<1000;i++)
@@ -356,7 +422,7 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 		}
 		
 		try {
-		      File file = new File("sounds/PacMan_win.wav");
+		      File file = new File("sounds/pacman_win.wav");
 		      AudioInputStream stream = AudioSystem.getAudioInputStream(file);
 		      Clip clip = AudioSystem.getClip();
 		      clip.open(stream);
@@ -365,7 +431,36 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 		      Thread.sleep(1000);
 		 
 		      stream.close();
-		 
+		      
+		      p1.setScore(score);
+		      
+			  Leaderboards.addData(p1);
+		      
+		      frame.dispose();
+		      
+		      new Thread(new Runnable()
+			    {		            	   
+						public void run()
+						{	
+							try {
+									File file = new File("sounds/pacman_win.wav");
+								      AudioInputStream stream = AudioSystem.getAudioInputStream(file);
+								      Clip clip = AudioSystem.getClip();
+								      clip.open(stream);
+								      clip.start();
+								      stream.close();
+								      new LevelSwitch(4,p1).display();
+								}
+								catch(Exception e)
+								{
+									e.getStackTrace();	
+								}
+								}
+					  }).start();
+				
+			  Thread.currentThread().stop(); // Stop the current thread;
+		      		      
+		     
 		    } catch (Exception ex) {
 		      System.out.println(ex.getMessage());
 		    }
@@ -374,10 +469,16 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 		
 	}
 	
+	@SuppressWarnings("deprecation")
 	void chkLose()
 	{
+		
 		if(LoseFlag)
 		{
+			p1.setScore(score);
+			
+			Leaderboards.addData(p1);
+			
 			try
 	        {
 	        	Thread.sleep(1500);
@@ -388,34 +489,64 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 	        }
 	        
 			
-			System.exit(1);
+			frame.dispose();
+			MainMenu.display();
+			
+			Thread.currentThread().stop(); // Stop the current thread;
 		}
 		
-		for(int i=0;i<enemyList.size();i++)
+		if(scaredGhost==0)
 		{
-			Enemy tmp=enemyList.get(i);
-			
-			if(tmp.x==x && tmp.y==y)
+			for(int i=0;i<enemyList.size();i++)
 			{
-				
-				try {
-						File file = new File("sounds/PacMan_lose.wav");
-						AudioInputStream stream = AudioSystem.getAudioInputStream(file);
-						Clip clip = AudioSystem.getClip();
-						clip.open(stream);
-						clip.start();
+				Enemy tmp=enemyList.get(i);
+			
+				if(tmp.x==x && tmp.y==y)
+				{
+					enemyList.remove(i);				
+					try {
+							File file = new File("sounds/pacman_lose.wav");
+							AudioInputStream stream = AudioSystem.getAudioInputStream(file);
+							Clip clip = AudioSystem.getClip();
+							clip.open(stream);
+							clip.start();
 			      
-						Thread.sleep(1000);
+							Thread.sleep(1000);
 			 
-						stream.close();
+							stream.close();
 			 
-			    	} catch (Exception ex) 
-					{
-			    		System.out.println(ex.getMessage());
-			    	}
-				LoseFlag=true;
-				EatenBy=tmp;
-				break;
+			    		} catch (Exception ex) 
+						{
+			    			System.out.println(ex.getMessage());
+						}
+					LoseFlag=true;
+					EatenBy=tmp;
+					break;
+				}
+			}			
+		}
+		else
+		{
+			for(int i=0;i<enemyList.size();i++)
+			{
+				Enemy tmp=enemyList.get(i);
+							
+				if(tmp.x==x && tmp.y==y)
+				{
+					enemyList.remove(i);
+					score=score+10;
+					try {
+							File file = new File("sounds/pacman_eatghost.wav");							
+							AudioInputStream stream = AudioSystem.getAudioInputStream(file);
+							Clip clip = AudioSystem.getClip();
+							clip.open(stream);
+							clip.start();
+			 
+			    		} catch (Exception ex) 
+						{
+			    			System.out.println(ex.getMessage());
+						}
+				}
 			}
 		}
 	}
@@ -427,7 +558,7 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 		
 		vely=-40;
 		
-		xAngle=120; //changes PacMan's mouth angle
+		xAngle=120; //changes Pacman's mouth angle
 		
 		yAngle=300;
 
@@ -610,373 +741,163 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 			//Maze Border End
 			
 			
+			//Left plus
 			
-			maze[80][80]=2;
-			
-			maze[160][80]=2;
-			
-			maze[240][80]=2;
-			
-			maze[320][80]=2;
-			
-			maze[400][80]=2;
-			
-			maze[480][80]=2;
-			
-			maze[560][80]=2;
-			
-			maze[640][80]=2;
-			
-			maze[720][80]=2;
-			
-			maze[800][80]=2;
-			
-			maze[880][80]=2;
-			
-			
-			
-			maze[120][160]=2;
-			
-			maze[200][160]=2;
-			
-			maze[280][160]=2;
-			
-			maze[360][160]=2;
-			
-			maze[440][160]=2;
-			
-			maze[520][160]=2;
-			
-			maze[600][160]=2;
-			
-			maze[680][160]=2;
-			
-			maze[760][160]=2;
-			
-			maze[840][160]=2;
-			
-			
-			
-			maze[80][240]=2;
-			
-			maze[160][240]=2;
-			
-			maze[240][240]=2;
-			
-			maze[320][240]=2;
-			
-			maze[400][240]=2;
-			
-			maze[480][240]=2;
-			
-			maze[560][240]=2;
-			
-			maze[640][240]=2;
-			
-			maze[720][240]=2;
-			
-			maze[800][240]=2;
-			
-			maze[880][240]=2;
-			
-			
-			
-			maze[120][320]=2;
-			
-			maze[200][320]=2;
-			
-			maze[280][320]=2;
-			
-			maze[360][320]=2;
-			
-			maze[440][320]=2;
-			
-			maze[520][320]=2;
-			
-			maze[600][320]=2;
-			
-			maze[680][320]=2;
-			
-			maze[760][320]=2;
-			
-			maze[840][320]=2;
-			
-			
-			maze[80][400]=2;
-			
+			maze[160][320]=2;
+			maze[160][360]=2;
 			maze[160][400]=2;
+			maze[120][360]=2;
+			maze[200][360]=2;
 			
-			maze[240][400]=2;
+			//Left plus End
 			
-			maze[320][400]=2;
+			//Right plus
 			
-			maze[400][400]=2;
-			
-			maze[480][400]=2;
-			
-			maze[560][400]=2;
-			
-			maze[640][400]=2;
-			
-			maze[720][400]=2;
-			
+			maze[800][320]=2;
+			maze[760][360]=2;
 			maze[800][400]=2;
+			maze[840][360]=2;
+			maze[800][360]=2;
 			
-			maze[880][400]=2;
-			
-			
-			
-			maze[120][480]=2;
-			
-			maze[200][480]=2;
-			
-			maze[280][480]=2;
-			
-			maze[360][480]=2;
-			
-			maze[440][480]=2;
-			
-			maze[520][480]=2;
-			
-			maze[600][480]=2;
-			
-			maze[680][480]=2;
-			
-			maze[760][480]=2;
-			
-			maze[840][480]=2;
+			//Right plus End
 			
 			
-			
-			maze[80][560]=2;
-			
-			maze[160][560]=2;
-			
-			maze[240][560]=2;
-			
-			maze[320][560]=2;
-			
-			maze[400][560]=2;
-			
-			maze[480][560]=2;
-			
-			maze[560][560]=2;
-			
-			maze[640][560]=2;
-			
-			maze[720][560]=2;
-			
-			maze[800][560]=2;
-			
-			maze[880][560]=2;
-			
-			
-			maze[120][640]=2;
-			
-			maze[200][640]=2;
-			
-			maze[280][640]=2;
-			
-			maze[360][640]=2;
-			
-			maze[440][640]=2;
-			
-			maze[520][640]=2;
-			
-			maze[600][640]=2;
-			
-			maze[680][640]=2;
-			
-			maze[760][640]=2;
-			
-			maze[840][640]=2;
-			
-
-			
+		
+				//Top inverted T
+		
+				maze[480][120]=2;
+				maze[480][160]=2;
+				maze[480][200]=2;
+				maze[360][200]=2;
+				maze[400][200]=2;
+				maze[440][200]=2;
+				maze[520][200]=2;
+				maze[560][200]=2;
+				maze[600][200]=2;
+				
+				//Top inverted T end
+				
+				
+				
+				//Bottom inverted T
+				
+				maze[480][560]=2;
+				maze[480][600]=2;
+				maze[480][520]=2;
+				maze[360][520]=2;
+				maze[400][520]=2;
+				maze[440][520]=2;
+				maze[520][520]=2;
+				maze[560][520]=2;
+				maze[600][520]=2;
+				
+				//Bottom inverted T end
+		
+		
+				//Top Inverted L
+		
+				maze[160][120]=2;
+				maze[160][160]=2;
+				maze[160][200]=2;
+				maze[200][120]=2;   
+				maze[240][120]=2; 
+				
+				//Top Inverted L End
+	                      
+	            
+				//Bottom L
+				
+				maze[800][120]=2;
+				maze[800][160]=2;
+				maze[800][200]=2;
+				maze[760][120]=2;   
+				maze[720][120]=2;  
+				
+				//Bottom L End
+				
+				
+				//Top Right inverted L
+				
+				maze[160][600]=2;
+				maze[160][560]=2;
+				maze[160][520]=2;
+				maze[200][600]=2;   
+				maze[240][600]=2; 
+				
+				//Top Right inverted L End
+				
+	            
+				//Bottom Right inverted L
+	                     
+				maze[800][600]=2;
+				maze[800][560]=2;
+				maze[800][520]=2;
+				maze[760][600]=2;   
+				maze[720][600]=2; 
+				
+				//Bottom Right inverted L End
+				
+				
+				
+				//Holding pen
+				
+				maze[400][360]=2;
+				maze[400][400]=2;
+				maze[400][320]=2;
+				
+				maze[440][400]=2;
+				maze[480][400]=2;
+				maze[520][400]=2;
+				
+				maze[560][400]=2;
+				maze[560][360]=2;
+				maze[560][320]=2;
+				
+				//Holding pen End
+				
+				
 				
 				//Food
 				
 				
-			maze[120][80]=3;
+			maze[80][120]=3;	
 			
-			maze[200][80]=4;
+			/*maze[80][200]=5;
+				
+			maze[80][280]=3;			
 			
-			maze[280][80]=5;
+			maze[80][480]=8;
 			
-			maze[360][80]=6;
+			maze[80][560]=9;
 			
-			maze[440][80]=7;
+			maze[80][640]=3;
 			
-			maze[520][80]=8;
+			maze[880][640]=3;
 			
-			maze[600][80]=3;
+			maze[880][120]=6;
 			
-			maze[680][80]=7;
+			maze[880][200]=9;
 			
-			maze[760][80]=8;
-			
-			maze[840][80]=4;
-			
-			
-			maze[80][160]=3;
-			
-			maze[160][160]=4;
-			
-			maze[240][160]=7;
-			
-			maze[320][160]=6;
-			
-			maze[400][160]=8;
-			
-			maze[480][160]=8;
-			
-			maze[560][160]=3;
-			
-			maze[640][160]=5;
-			
-			maze[720][160]=6;
-			
-			maze[800][160]=5;
-			
-			
-			maze[120][240]=3;
-			
-			maze[200][240]=4;
-			
-			maze[280][240]=7;
-			
-			maze[360][240]=6;
-			
-			maze[440][240]=6;
-			
-			maze[520][240]=3;
-			
-			maze[600][240]=8;
-			
-			maze[680][240]=3;
-			
-			maze[760][240]=4;
-			
-			maze[840][240]=4;
-			
-			maze[920][240]=8;
-			
-			
-			
-			maze[80][320]=8;
-			
-			maze[160][320]=3;
-			
-			maze[240][320]=5;
-			
-			maze[320][320]=6;
-			
-			maze[400][320]=4;
-			
-			maze[480][320]=3;
-			
-			maze[560][320]=5;
-			
-			maze[640][320]=6;
-			
-			maze[720][320]=7;
-			
-			maze[800][320]=8;
-			
-			
-			
-			
-			maze[120][400]=8;
-			
-			maze[200][400]=3;
-			
-			maze[280][400]=5;
-			
-			maze[360][400]=7;
-			
-			maze[440][400]=6;
-			
-			maze[520][400]=8;
-			
-			maze[600][400]=3;
-			
-			maze[680][400]=4;
-			
-			maze[760][400]=6;
-			
-			maze[840][400]=4;
-
-			
-			
-			
-			maze[160][480]=3;
-			
-			maze[240][480]=4;
-			
-			maze[320][480]=5;
-			
-			maze[400][480]=6;
-			
-			maze[480][480]=7;
-			
-			maze[560][480]=4;
-			
-			maze[640][480]=8;
-			
-			maze[720][480]=5;
-			
-			maze[800][480]=3;
+			maze[880][280]=8;
 			
 			maze[880][480]=4;
 			
+			maze[880][560]=5;
 			
+			maze[880][640]=8;
 			
-			maze[120][560]=3;
+			maze[440][360]=9;
 			
-			maze[200][560]=5;
+			maze[480][360]=3;
 			
-			maze[280][560]=4;
+			maze[520][360]=7;*/
 			
-			maze[360][560]=7;
-			
-			maze[440][560]=8;
-			
-			maze[520][560]=6;
-			
-			maze[600][560]=7;
-			
-			maze[680][560]=3;
-			
-			maze[760][560]=4;
-			
-			maze[840][560]=5;
-
-			
-			maze[80][640]=5;
-			
-			maze[160][640]=3;
-			
-			maze[240][640]=3;
-			
-			maze[320][640]=7;
-			
-			maze[400][640]=3;
-			
-			maze[480][640]=4;
-			
-			maze[560][640]=3;
-			
-			maze[640][640]=7;
-			
-			maze[720][640]=6;
-			
-			maze[800][640]=3;
 			//Food End
 								
 		
 				
 	}
-		
+	
 	Enemy followAI(Enemy tmp)
 	{
 		int a=tmp.x;
@@ -1055,6 +976,64 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 		}
 			
 			return new Enemy(a,b,tmp.name,tmp.path,Direction,tmp.scatter);
+	}
+		
+	Enemy escapeAI(Enemy tmp)
+	{
+		int a=tmp.x;
+		
+		int b=tmp.y;
+		
+		int x_dist=x-a;
+		
+		int y_dist=y-b;
+		
+		if(Math.abs(x_dist)>Math.abs(y_dist) && x_dist>=0 && a-40>=0 && a-40<960 && maze[a-40][b]!=2) //Move left
+			a=a-40;
+
+		else if(Math.abs(x_dist)>Math.abs(y_dist) && x_dist<0 && a+40>=0 && a+40<960 && maze[a+40][b]!=2) //Move right
+			a=a+40;
+
+		else if(Math.abs(x_dist)<Math.abs(y_dist) && y_dist>=0 && b-40>=0 && b-40<720 && maze[a][b-40]!=2) //Move up
+			b=b-40;
+
+		else if(Math.abs(x_dist)<Math.abs(y_dist) && y_dist<0 && b+40>=0 && b+40<720 && maze[a][b+40]!=2) //Move up
+			b=b+40;	
+		else
+		{
+			class RandomMove
+			{
+				int p, q;
+				
+				RandomMove(int p,int q)
+				{
+					this.p=p;
+					this.q=q;
+				}
+			}
+			
+			java.util.List<RandomMove> moveList=new java.util.ArrayList<>();
+			
+			if(a+40>=0 && a+40<960 && maze[a+40][b]!=2)
+				moveList.add(new RandomMove(a+40,b));
+			
+			if(a-40>=0 && a-40<960 && maze[a-40][b]!=2)
+				moveList.add(new RandomMove(a-40,b));
+			
+			if(b+40>=0 && b+40<720 && maze[a][b+40]!=2)
+				moveList.add(new RandomMove(a,b+40));
+			
+			if(b-40>=0 && b-40<720 && maze[a][b-40]!=2)
+				moveList.add(new RandomMove(a,b-40));
+			
+			Collections.shuffle(moveList); //Pick a random move and set it
+			
+			a=moveList.get(0).p;
+			
+			b=moveList.get(0).q;
+		}
+					
+		return new Enemy(a,b,tmp.name,tmp.path,"",tmp.scatter);
 	}
 
 }

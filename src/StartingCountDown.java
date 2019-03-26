@@ -59,6 +59,16 @@ public class StartingCountDown
 						}
 					});		
 			 }
+			 else if(x==3)
+			 {
+				 SwingUtilities.invokeLater(new Runnable()
+					{
+						public void run()
+						{
+							PacMan_Level3.control(p);
+						}
+					});		
+			 }
 			 
 
 		}

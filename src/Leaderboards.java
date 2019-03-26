@@ -1,7 +1,3 @@
-import java.awt.*;
-
-import javax.swing.*;
-
 import java.io.FileOutputStream;
 
 import java.io.IOException;
@@ -12,7 +8,6 @@ import java.io.*;
 
 import java.util.*;
 
-import java.awt.event.*;
 
 
 public class Leaderboards
@@ -20,23 +15,23 @@ public class Leaderboards
 	
 	static java.util.List<PlayerData> list;
 	
-	public static void main(String args[])
+	/*public static void main(String args[])
 	{
 		PlayerData p=new PlayerData("Adi",java.time.LocalDateTime.now().toString());
 		p.setScore(1);
 		addData(p);
 				
 		p=new PlayerData("Arp",java.time.LocalDateTime.now().toString());
-		p.setScore(10);
+		p.setScore(2);
 		addData(p);
 		
 		p=new PlayerData("Debo",java.time.LocalDateTime.now().toString());
-		p.setScore(11);
+		p.setScore(5);
 		addData(p);
 		
 		
 		p=new PlayerData("Sap",java.time.LocalDateTime.now().toString());
-		p.setScore(9);
+		p.setScore(10);
 		addData(p);
 		
 		
@@ -53,7 +48,7 @@ public class Leaderboards
 		
 		readyString();
 		
-	}
+	}*/
 	
 	static java.util.List<PlayerData> GetPlayerData()
 	{
@@ -77,7 +72,7 @@ public class Leaderboards
 		{
 			e.getStackTrace();
 		}
-		
+	
 		return Playerlist;
 	}
 		
@@ -90,10 +85,17 @@ public class Leaderboards
 		
 		File file=new File("Leaderboards");
 		
-		if(file.exists())
-			file.delete();
+		try {
+			if(!file.exists())
+				file.createNewFile();
+		}
+		catch(IOException e)
+		{
+			 e.getStackTrace();
+		}
+		
 			
-		try(ObjectOutputStream objectOut = new ObjectOutputStream(new FileOutputStream("Leaderboards")))
+		try(ObjectOutputStream objectOut = new ObjectOutputStream(new FileOutputStream(file)))
 		{	
 			for(PlayerData tmp:PlayerList)
 			{
@@ -115,6 +117,8 @@ public class Leaderboards
 		list.sort(byScore.reversed()); //Sort Leader board data by descending order of score
 		
 		String top3[]=new String[3];
+		
+		top3[0]=top3[1]=top3[2]="No Data";
 		
 		for(int i=0;i<list.size() && i<3;i++)
 			top3[i]=list.get(i).toString();

@@ -388,7 +388,7 @@ public class PacMan_Level1 extends JPanel implements ActionListener,KeyListener
 				public void run()
 				{	
 					try {
-							File file = new File("sounds/pacman_win.wav");
+							  File file = new File("sounds/pacman_win.wav");
 						      AudioInputStream stream = AudioSystem.getAudioInputStream(file);
 						      Clip clip = AudioSystem.getClip();
 						      clip.open(stream);
@@ -413,6 +413,10 @@ public class PacMan_Level1 extends JPanel implements ActionListener,KeyListener
 	{
 		if(LoseFlag)
 		{
+			p1.setScore(score);
+			
+			Leaderboards.addData(p1);
+			
 			try
 	        {
 	        	Thread.sleep(1500); //show lose message
