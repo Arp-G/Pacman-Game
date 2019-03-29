@@ -1,3 +1,5 @@
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.io.*;
 import javax.swing.*;
 import javax.sound.sampled.*;
@@ -31,7 +33,11 @@ public class StartingCountDown
 		
 		frame.add(label);
 			    	 
-		frame.setVisible(true);				
+		frame.setVisible(true);	
+		
+	    Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+	    
+	    frame.setLocation(dim.width/2-frame.getSize().width/2, dim.height/2-frame.getSize().height/2);
 		
 		try
 		{

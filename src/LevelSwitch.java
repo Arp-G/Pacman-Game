@@ -1,7 +1,8 @@
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import javax.swing.*;
 
 
@@ -40,7 +41,7 @@ public class LevelSwitch extends JFrame
 	        				else 
 	        					MainMenu.display();
 	        			
-	        					
+	        				
 	        			}
 	        	  }).start();	
 	           }  
@@ -60,6 +61,9 @@ public class LevelSwitch extends JFrame
 	    winFrame.add(b);
 	    winFrame.setTitle("Promt");
 	    winFrame.setVisible(true);
+	    
+	    Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+	    winFrame.setLocation(dim.width/2-winFrame.getSize().width/2, dim.height/2-winFrame.getSize().height/2);
 	
 	}
 }

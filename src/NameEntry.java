@@ -1,7 +1,9 @@
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -81,6 +83,10 @@ public class NameEntry
 		frame.add(background);
 
 		frame.setVisible(true);
+		
+	    Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+	    
+	    frame.setLocation(dim.width/2-frame.getSize().width/2, dim.height/2-frame.getSize().height/2);
 	}
 	
 	static void control(int x)

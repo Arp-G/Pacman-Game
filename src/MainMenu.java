@@ -330,6 +330,10 @@ public class MainMenu extends JLabel implements ActionListener,LineListener
         frame.add(background);
 
         frame.setVisible(true);
+        
+	    Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+	    
+	    frame.setLocation(dim.width/2-frame.getSize().width/2, dim.height/2-frame.getSize().height/2);
 			
 	}
 	

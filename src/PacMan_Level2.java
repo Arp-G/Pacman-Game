@@ -164,6 +164,10 @@ public class PacMan_Level2 extends JPanel implements ActionListener,KeyListener
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		frame.setTitle("PAC MAN");
+		
+	    Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+	    
+	    frame.setLocation(dim.width/2-frame.getSize().width/2, dim.height/2-frame.getSize().height/2);
 	}
 	
 	public void paintComponent(Graphics g)
@@ -805,7 +809,7 @@ public class PacMan_Level2 extends JPanel implements ActionListener,KeyListener
 			
 			maze[80][200]=3;
 				
-			/*maze[80][280]=4;			
+			maze[80][280]=4;			
 			
 			maze[80][480]=3;
 			
@@ -843,7 +847,7 @@ public class PacMan_Level2 extends JPanel implements ActionListener,KeyListener
 			
 			maze[760][520]=6;
 			
-			maze[800][520]=8;*/
+			maze[800][520]=8;
 			
 			//Food End
 								
@@ -1020,6 +1024,10 @@ public class PacMan_Level2 extends JPanel implements ActionListener,KeyListener
 			
 			java.util.List<RandomMove> moveList=new java.util.ArrayList<>();
 			
+			try {
+				
+			
+		
 			if(maze[a+40][b]!=2)
 				moveList.add(new RandomMove(a+40,b,"_right"));
 			
@@ -1031,6 +1039,13 @@ public class PacMan_Level2 extends JPanel implements ActionListener,KeyListener
 			
 			if(maze[a][b-40]!=2)
 				moveList.add(new RandomMove(a,b-40,"_up"));
+			}
+			
+			catch(ArrayIndexOutOfBoundsException e) {
+				e.getStackTrace();
+				return tmp;
+			}
+			
 			
 			Collections.shuffle(moveList); //Pick a random move and set it
 			

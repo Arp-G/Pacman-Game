@@ -114,7 +114,7 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 		
 		enemyList.add(new Enemy(40,640,"Choclate","Choclate_ghost","_left",10));
 		
-		enemyList.add(new Enemy(480,360,"Pink","Pink_ghost","_left",8));
+		enemyList.add(new Enemy(480,320,"Pink","Pink_ghost","_left",8));
 		
 	}
 	
@@ -135,6 +135,10 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		frame.setTitle("PAC MAN");
+		
+	    Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+	    
+	    frame.setLocation(dim.width/2-frame.getSize().width/2, dim.height/2-frame.getSize().height/2);
 	}
 			
 	public static void main(String args[])
@@ -175,7 +179,9 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 					g.drawImage(new ImageIcon("Images/Frightned_ghost.png").getImage(), tmp.x, tmp.y, null); //Draw scared enemys
 						 	 
 				}
-				scaredGhost--;
+				
+				if(scaredGhost!=0)
+					scaredGhost--;
 			}
 			
 			g.setColor(Color.decode("#FFFF00")); //Set pac man color
@@ -495,7 +501,7 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 			Thread.currentThread().stop(); // Stop the current thread;
 		}
 		
-		if(scaredGhost==0)
+		if(ExtendedScared==0)
 		{
 			for(int i=0;i<enemyList.size();i++)
 			{
@@ -644,10 +650,31 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 		
 			//Top Border	
 			maze[0][0]=2;
-			maze[40][0]=2;
-			maze[80][0]=2;
-			maze[120][0]=2;
-			maze[160][0]=2;
+			
+			maze[200][40]=2;
+			maze[200][80]=2;
+			maze[200][120]=2;
+			maze[200][160]=2;
+			
+			maze[240][40]=2;
+			maze[240][80]=2;
+			maze[240][120]=2;
+			maze[240][160]=2;
+
+			maze[520][200]=2;
+			maze[520][240]=2;
+			maze[520][280]=2;
+			maze[520][320]=2;
+			
+
+			maze[520][400]=2;
+			maze[520][440]=2;
+			maze[520][480]=2;
+			maze[520][520]=2;
+			maze[520][560]=2;
+
+
+
 			maze[200][0]=2;	
 			maze[240][0]=2;		
 			maze[280][0]=2;		
@@ -673,10 +700,18 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 			
 			//Bottom Border	
 			maze[0][720]=2;
-			maze[40][720]=2;
-			maze[80][720]=2;
-			maze[120][720]=2;
-			maze[160][720]=2;
+			
+			maze[200][680]=2;
+			maze[200][640]=2;
+			maze[200][600]=2;
+			maze[200][560]=2;
+			
+			maze[240][680]=2;
+			maze[240][640]=2;
+			maze[240][600]=2;
+			maze[240][560]=2;
+			
+		
 			maze[200][720]=2;	
 			maze[240][720]=2;		
 			maze[280][720]=2;		
@@ -707,7 +742,10 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 			maze[0][160]=2;
 			maze[0][200]=2;
 			maze[0][240]=2;	
-			maze[0][280]=2;			
+			maze[0][280]=2;	
+			maze[0][320]=2;
+			maze[0][360]=2;
+			maze[0][400]=2;
 			maze[0][440]=2;	
 			maze[0][480]=2;
 			maze[0][520]=2;
@@ -726,7 +764,10 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 			maze[960][160]=2;
 			maze[960][200]=2;
 			maze[960][240]=2;	
-			maze[960][280]=2;			
+			maze[960][280]=2;
+			maze[960][320]=2;
+			maze[960][360]=2;
+			maze[960][400]=2;
 			maze[960][440]=2;	
 			maze[960][480]=2;
 			maze[960][520]=2;
@@ -735,166 +776,168 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 			maze[960][640]=2;
 			maze[960][680]=2;	
 			maze[960][720]=2;		
-			maze[960][760]=2;		
-			//Right Border End
+			maze[960][760]=2;	
 			
-			//Maze Border End
-			
-			
-			//Left plus
-			
-			maze[160][320]=2;
-			maze[160][360]=2;
-			maze[160][400]=2;
-			maze[120][360]=2;
-			maze[200][360]=2;
-			
-			//Left plus End
-			
-			//Right plus
-			
-			maze[800][320]=2;
-			maze[760][360]=2;
-			maze[800][400]=2;
+			maze[920][360]=2;
+			maze[880][360]=2;
 			maze[840][360]=2;
 			maze[800][360]=2;
+			maze[760][360]=2;
+			maze[720][360]=2;
 			
-			//Right plus End
+			maze[920][400]=2;
+			maze[880][400]=2;
+			maze[840][400]=2;
+			maze[800][400]=2;
+			maze[760][400]=2;
+			maze[720][400]=2;
+			
+
+			maze[0][360]=2;
+			maze[40][360]=2;
+			maze[80][360]=2;
+			maze[120][360]=2;
+			maze[160][360]=2;
+			maze[200][360]=2;
+			maze[240][360]=2;
+			maze[280][360]=2;
+			maze[320][360]=2;
+			maze[360][360]=2;
+			maze[400][360]=2;
+			maze[440][360]=2;
+			maze[480][360]=2;
+			maze[520][360]=2;
+			maze[560][360]=2;
+			
+			maze[0][400]=2;
+			maze[40][400]=2;
+			maze[80][400]=2;
+			maze[120][400]=2;
+			maze[160][400]=2;
+			maze[200][400]=2;
+			maze[240][400]=2;
+			maze[280][400]=2;
+			maze[320][400]=2;
+			maze[360][400]=2;
+			maze[400][400]=2;
+			maze[440][400]=2;
+			maze[480][400]=2;
+			maze[520][400]=2;
+			maze[560][400]=2;
+			
+			maze[560][320]=2;
+			maze[560][280]=2;
+			maze[560][240]=2;
+			maze[560][200]=2;
+			
+			maze[600][200]=2;
+			maze[640][200]=2;
+			maze[680][200]=2;
+			maze[720][200]=2;
+			maze[760][200]=2;
 			
 			
-		
-				//Top inverted T
-		
-				maze[480][120]=2;
-				maze[480][160]=2;
-				maze[480][200]=2;
-				maze[360][200]=2;
-				maze[400][200]=2;
-				maze[440][200]=2;
-				maze[520][200]=2;
-				maze[560][200]=2;
-				maze[600][200]=2;
+			maze[560][440]=2;
+			maze[560][480]=2;
+			maze[560][520]=2;
+			maze[560][560]=2;
+			
+			maze[600][560]=2;
+			maze[640][560]=2;
+			maze[680][560]=2;
+			maze[720][560]=2;
+			maze[760][560]=2;	
+			
 				
-				//Top inverted T end
-				
-				
-				
-				//Bottom inverted T
-				
-				maze[480][560]=2;
-				maze[480][600]=2;
-				maze[480][520]=2;
-				maze[360][520]=2;
-				maze[400][520]=2;
-				maze[440][520]=2;
-				maze[520][520]=2;
-				maze[560][520]=2;
-				maze[600][520]=2;
-				
-				//Bottom inverted T end
-		
-		
-				//Top Inverted L
-		
-				maze[160][120]=2;
-				maze[160][160]=2;
-				maze[160][200]=2;
-				maze[200][120]=2;   
-				maze[240][120]=2; 
-				
-				//Top Inverted L End
-	                      
-	            
-				//Bottom L
-				
-				maze[800][120]=2;
-				maze[800][160]=2;
-				maze[800][200]=2;
-				maze[760][120]=2;   
-				maze[720][120]=2;  
-				
-				//Bottom L End
-				
-				
-				//Top Right inverted L
-				
-				maze[160][600]=2;
-				maze[160][560]=2;
-				maze[160][520]=2;
-				maze[200][600]=2;   
-				maze[240][600]=2; 
-				
-				//Top Right inverted L End
-				
-	            
-				//Bottom Right inverted L
-	                     
-				maze[800][600]=2;
-				maze[800][560]=2;
-				maze[800][520]=2;
-				maze[760][600]=2;   
-				maze[720][600]=2; 
-				
-				//Bottom Right inverted L End
-				
-				
-				
-				//Holding pen
-				
-				maze[400][360]=2;
-				maze[400][400]=2;
-				maze[400][320]=2;
-				
-				maze[440][400]=2;
-				maze[480][400]=2;
-				maze[520][400]=2;
-				
-				maze[560][400]=2;
-				maze[560][360]=2;
-				maze[560][320]=2;
-				
-				//Holding pen End
-				
-				
-				
-				//Food
-				
-				
+			//Food
+								
 			maze[80][120]=3;	
 			
-			/*maze[80][200]=5;
-				
-			maze[80][280]=3;			
+			maze[120][120]=6;
 			
-			maze[80][480]=8;
+			maze[80][200]=5;
+			
+			maze[120][200]=4;
+				
+			maze[80][280]=3;
+			
+			maze[120][280]=7;
+			
+			maze[200][280]=3;
+			
+			maze[280][280]=6;
+			
+			maze[360][280]=8;
+			
+			
+			
+			
+			maze[80][480]=4;
+			
+			maze[120][480]=3;
 			
 			maze[80][560]=9;
 			
+			maze[120][560]=7;
+			
 			maze[80][640]=3;
 			
-			maze[880][640]=3;
+			maze[120][640]=5;
 			
-			maze[880][120]=6;
+			maze[200][480]=7;
 			
-			maze[880][200]=9;
+			maze[280][480]=5;
 			
-			maze[880][280]=8;
+			maze[360][480]=3;
 			
-			maze[880][480]=4;
 			
-			maze[880][560]=5;
+			maze[360][200]=4;
 			
-			maze[880][640]=8;
+			maze[360][120]=8;
 			
-			maze[440][360]=9;
+			maze[360][560]=6;
 			
-			maze[480][360]=3;
+			maze[360][640]=5;
 			
-			maze[520][360]=7;*/
 			
-			//Food End
-								
-		
+			maze[440][640]=3;	
+			
+			maze[520][640]=7;
+			
+			maze[600][640]=4;
+			
+			maze[680][640]=3;
+			
+			maze[760][640]=5;
+			
+			maze[840][640]=9;
+			
+			
+			maze[440][120]=3;	
+			
+			maze[520][120]=7;
+			
+			maze[600][120]=4;
+			
+			maze[680][120]=3;
+			
+			maze[760][120]=5;
+			
+			maze[840][120]=9;
+			
+			
+			maze[840][280]=4;
+						
+			maze[640][360]=9;
+			
+			maze[640][400]=8;
+			
+			maze[840][480]=6;
+			
+			maze[640][480]=3;
+			
+			maze[640][280]=3;
+					
 				
 	}
 	
@@ -953,6 +996,8 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 			
 			java.util.List<RandomMove> moveList=new java.util.ArrayList<>();
 			
+			try {
+			
 			if(maze[a+40][b]!=2)
 				moveList.add(new RandomMove(a+40,b,"_right"));
 			
@@ -964,6 +1009,12 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 			
 			if(maze[a][b-40]!=2)
 				moveList.add(new RandomMove(a,b-40,"_up"));
+			
+			}
+			catch(ArrayIndexOutOfBoundsException e) {
+				e.getStackTrace();
+				return tmp;
+			}
 			
 			Collections.shuffle(moveList); //Pick a random move and set it
 			
@@ -987,6 +1038,8 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 		int x_dist=x-a;
 		
 		int y_dist=y-b;
+		
+		try {
 		
 		if(Math.abs(x_dist)>Math.abs(y_dist) && x_dist>=0 && a-40>=0 && a-40<960 && maze[a-40][b]!=2) //Move left
 			a=a-40;
@@ -1032,6 +1085,12 @@ public class PacMan_Level3 extends JPanel implements ActionListener,KeyListener
 			
 			b=moveList.get(0).q;
 		}
+		}
+		catch(ArrayIndexOutOfBoundsException e) {
+			e.getStackTrace();
+			return tmp;
+		}
+		
 					
 		return new Enemy(a,b,tmp.name,tmp.path,"",tmp.scatter);
 	}
