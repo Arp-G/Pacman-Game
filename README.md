@@ -4,6 +4,8 @@ The game currently contains 3 working levels.
 The game is completely designed in Java and GUI is designed using swing. 
 To use the desktop swing app you must have JRE(Java Runtime Environment) installed on your machine.
 
+Download Link: https://drive.google.com/file/d/1DPMBofyiVqeiEN2uz6mta-EPEh3JLaZH/view
+
 # Gameplay:
 
   The game is simple and can be enjoyed by players of any age group. The player must control pacman the arrow keys on their keyboard.
@@ -45,3 +47,11 @@ To use the desktop swing app you must have JRE(Java Runtime Environment) install
   unpredictable.
   
 * Patrolling Ghosts will always move in a fixed loop.
+
+# Known Bugs:
+
+* In rare cases the UI may not behave as expected or might crash to avoid this it is recommend to restart the game after every   playthrough
+
+* Sometimes a ghost might move out of the map and disappear
+
+
